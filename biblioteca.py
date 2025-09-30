@@ -1,12 +1,29 @@
+import csv
+
 def carica_da_file(file_path):
     """Carica i libri dal file"""
     # TODO
+    with open (file_path, "r", encoding="utf-8") as infile:
+        reader = csv.reader(infile)
+        next (reader)
 
+        lista = []
+
+        for row in infile :
+            element = row.strip("\n").split(",")
+            lista.append (element)
+
+    return lista
 
 def aggiungi_libro(biblioteca, titolo, autore, anno, pagine, sezione, file_path):
     """Aggiunge un libro nella biblioteca"""
     # TODO
+    with open (file_path, "a", encoding="utf-8") as outfile:
+        writer = csv.writer(outfile)
+        riga = [titolo, autore, anno, pagine, sezione]
+        writer.writerow(riga)
 
+    return riga
 
 def cerca_libro(biblioteca, titolo):
     """Cerca un libro nella biblioteca dato il titolo"""
@@ -36,6 +53,8 @@ def main():
             while True:
                 file_path = input("Inserisci il path del file da caricare: ").strip()
                 biblioteca = carica_da_file(file_path)
+                for riga in biblioteca:
+                    print (" | ".join (riga))
                 if biblioteca is not None:
                     break
 
@@ -54,7 +73,7 @@ def main():
                 print("Errore: inserire valori numerici validi per anno, pagine e sezione.")
                 continue
 
-            libro = aggiungi_libro(biblioteca, titolo, autore, anno, pagine, sezione, file_path)
+            libro = aggiungi_libro (biblioteca, titolo, autore, anno, pagine, sezione, file_path)
             if libro:
                 print(f"Libro aggiunto con successo!")
             else:
