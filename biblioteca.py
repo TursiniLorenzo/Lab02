@@ -2,63 +2,49 @@ import csv
 
 from charset_normalizer.md import annotations
 
-
 def carica_da_file(file_path):
     """Carica i libri dal file"""
     # TODO
+    lista = []
     with open (file_path, "r", encoding="utf-8") as infile:
         reader = csv.reader(infile)
         next (reader)
-
-        lista = []
-
-        for row in infile :
-            element = row.strip("\n").split(",")
-            lista.append (element)
-
+        for row in reader :
+            lista.append (row)
 
     return lista
-
+#-----------------------------------------------------------------------------------------------------------------------
 def aggiungi_libro(biblioteca, titolo, autore, anno, pagine, sezione, file_path):
     """Aggiunge un libro nella biblioteca"""
     # TODO
+    biblioteca = carica_da_file(file_path)
+    riga = [titolo, autore, str(anno), str(pagine), str(sezione)]
+
+    if riga in biblioteca :
+        return False
 
     with open (file_path, "a", encoding="utf-8") as outfile:
         writer = csv.writer(outfile)
-        riga = [titolo, autore, anno, pagine, sezione]
         writer.writerow(riga)
 
-    return riga
-
+    return True
+#-----------------------------------------------------------------------------------------------------------------------
 def cerca_libro(biblioteca, titolo):
     """Cerca un libro nella biblioteca dato il titolo"""
     # TODO
+    for row in biblioteca :
+        if not row:
+            continue # In modo da saltare righe nulle/vuote
+        if titolo in row [0] :
+            return row [0], row [1], row [2], row [3], row [4]
 
-    with open (biblioteca, "r", encoding = "utf-8") as infile :
-        reader = csv.reader(infile)
-        next (reader)
-
-        lista = []
-        for row in infile :
-            element = row.strip("\n").split(",")
-            lista.append (element)
-
-
-        for row in lista :
-            if titolo in row [0] :
-                titolo = row[0]
-                autore = row[1]
-                anno = row[2]
-                pagine = row[3]
-                sezione = row[4]
-
-    return titolo, autore, anno, pagine, sezione
-
+    return None
+#-----------------------------------------------------------------------------------------------------------------------
 def elenco_libri_sezione_per_titolo(biblioteca, sezione):
     """Ordina i titoli di una data sezione della biblioteca in ordine alfabetico"""
     # TODO
 
-
+#-----------------------------------------------------------------------------------------------------------------------
 def main():
     biblioteca = []
     file_path = "biblioteca.csv"
