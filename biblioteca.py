@@ -16,6 +16,7 @@ def carica_da_file(file_path):
             element = row.strip("\n").split(",")
             lista.append (element)
 
+
     return lista
 
 def aggiungi_libro(biblioteca, titolo, autore, anno, pagine, sezione, file_path):
