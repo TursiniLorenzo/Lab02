@@ -1,50 +1,58 @@
 import csv
 
 from charset_normalizer.md import annotations
+numero_sezioni_biblioteca = 0 # Creo una variabile per memorizzare il numero di sezioni della biblioteca
 
 def carica_da_file(file_path):
     """Carica i libri dal file"""
-    # TODO
-    lista = []
+    global numero_sezioni_biblioteca
     with open (file_path, "r", encoding="utf-8") as infile:
         reader = csv.reader(infile)
-        next (reader)
-        for row in reader :
-            lista.append (row)
+        righe = list (reader)
+        prima_riga = righe.pop(0)
+        numero_sezioni_biblioteca = int (prima_riga [0]) # Aggiorno la variabile inizializzata all'esterno della
+                                                         # funzione con il numero effettivo di sezioni
+    return righe
 
-    return lista
-#-----------------------------------------------------------------------------------------------------------------------
 def aggiungi_libro(biblioteca, titolo, autore, anno, pagine, sezione, file_path):
     """Aggiunge un libro nella biblioteca"""
-    # TODO
-    biblioteca = carica_da_file(file_path)
     riga = [titolo, autore, str(anno), str(pagine), str(sezione)]
-
+    # Siccome i valori nel file sono tutti di tipo stringa, faccio in modo che anche quelli inseriti dall'utente
+    # lo siano, infatti quando vengono inseriti, essendo valori numerici, vengono memorizzati come int e non come
+    # stringhe
     if riga in biblioteca :
-        return False
-
+        return False # Se il libro è già presente nella biblioteca, la funzione restituisce come valore False, in modo
+                     # da comunicare che non è stato possibile aggiungere il libro
     with open (file_path, "a", encoding="utf-8") as outfile:
         writer = csv.writer(outfile)
         writer.writerow(riga)
-
+    # Se invece il libro non è presente nella biblioteca, allora sarà possibile aggiungerlo in questo modo, restituendo
+    # come valore finale True
     return True
-#-----------------------------------------------------------------------------------------------------------------------
+
 def cerca_libro(biblioteca, titolo):
     """Cerca un libro nella biblioteca dato il titolo"""
-    # TODO
     for row in biblioteca :
         if not row:
             continue # In modo da saltare righe nulle/vuote
-        if titolo in row [0] :
+        if titolo in row [0] : # Verifico che il titolo sia presente nel "vettore colonna" contenente tutti i titoli
+                               # presenti nella biblioteca
             return row [0], row [1], row [2], row [3], row [4]
-
     return None
-#-----------------------------------------------------------------------------------------------------------------------
+
 def elenco_libri_sezione_per_titolo(biblioteca, sezione):
     """Ordina i titoli di una data sezione della biblioteca in ordine alfabetico"""
-    # TODO
+    sezioni = [[] for _ in range (numero_sezioni_biblioteca)] # Lista di liste vuote, in cui inserire i vari libri divisi in sezioni
 
-#-----------------------------------------------------------------------------------------------------------------------
+    for riga in biblioteca :
+        num_sezione = int (riga [4])
+        sezioni [num_sezione - 1].append (riga) # Popolo le liste per ogni sezione
+
+    if 1 <= sezione <= numero_sezioni_biblioteca: # Controllo che l'input dell'utente sia corretto
+        return sorted (sezioni [sezione - 1]) # Restituisco la sezione richiesta dall'utente, ricordando di sottrarre
+                                              # 1 all'indice che va da 0 a 4 e non da 1 a 5
+    return None
+
 def main():
     biblioteca = []
     file_path = "biblioteca.csv"
